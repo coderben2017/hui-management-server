@@ -5,29 +5,30 @@ var app = express();
 //设置跨域访问
 app.all('*', function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
-    // res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    // res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
-    // res.header("X-Powered-By",' 3.2.1');
-    // res.header("Content-Type", "application/text;charset=utf-8");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+    res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+    res.header("X-Powered-By", ' 3.2.1');
+    res.header("Content-Type", "application/json;charset=utf-8");
     next();
 });
-app.get('/api/plans', function (req, res) {
-    var result = plans;
-    var param = req.query;
-    if (param.title) {
-        result = result.filter(function (plan) { return plan.title.toLowerCase().indexOf(param.title.toLowerCase()) > -1; });
-    }
-    res.json(result);
-});
-app.get('/api/plan/:id', function (req, res) {
-    res.json(plans.find(function (plan) { return plan.id == req.params.id; }));
-});
+// 文章api
 app.get('/api/articles', function (req, res) {
     var result = articles;
     res.json(result);
 });
 app.get('/api/article/:id', function (req, res) {
     res.json(articles.find(function (article) { return article.id == req.params.id; }));
+});
+// 计划api
+app.get('/api/plans', function (req, res) {
+    res.json(plans);
+});
+app.get('/api/plan/:info', function (req, res) {
+    var result = plans;
+    if (req.params.info) {
+        result = result.filter(function (plan) { return plan.title.toLowerCase().indexOf(req.params.info) > -1; });
+    }
+    res.json(result);
 });
 var server = app.listen(8000, 'localhost', function () {
     console.log('服务器已启动，正在监听8000端口');

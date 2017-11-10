@@ -4,33 +4,34 @@ import * as express from 'express';
 const app = express();
 
 //设置跨域访问
-app.all('*', function(req, res, next) {
+app.all('*', (req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
-  // res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  // res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
-  // res.header("X-Powered-By",' 3.2.1');
-  // res.header("Content-Type", "application/text;charset=utf-8");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+  res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
+  res.header("X-Powered-By",' 3.2.1');
+  res.header("Content-Type", "application/json;charset=utf-8");
   next();
 });
 
-app.get('/api/plans', (req, res) => {
-  let result = plans;
-  const param = req.query;
-  if (param.title) {
-    result = result.filter(plan => plan.title.toLowerCase().indexOf(param.title.toLowerCase()) > -1);
-  }
-  res.json(result);
-});
-app.get('/api/plan/:id', (req, res) => {
-  res.json(plans.find(plan => plan.id == req.params.id));
-});
-
+// 文章api
 app.get('/api/articles', (req, res) => {
   let result = articles;
   res.json(result);
 });
 app.get('/api/article/:id', (req, res) => {
   res.json(articles.find(article => article.id == req.params.id));
+});
+
+// 计划api
+app.get('/api/plans', (req, res) => {
+  res.json(plans);
+});
+app.get('/api/plan/:info', (req, res) => {
+  let result = plans;
+  if (req.params.info) {
+    result = result.filter(plan => plan.title.toLowerCase().indexOf(req.params.info) > -1);
+  }
+  res.json(result);
 });
 
 const server = app.listen(8000, 'localhost', () => {
